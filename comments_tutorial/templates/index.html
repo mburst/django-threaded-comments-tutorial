@@ -1,0 +1,86 @@
+{% load humanize %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Comments Tutorial by Max Burstein</title>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("#commenters").on("click", ".reply", function(event){
+                event.preventDefault();
+                var form = $("#postcomment").clone(true);
+                form.find('.parent').val($(this).parent().parent().attr('id'));
+                $(this).parent().append(form);
+            });
+        });
+    </script>
+    <style>
+        a {
+            font-weight: bold;
+            color: #ff982c;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        #commenters {
+            padding-left: 0px;
+        }
+        
+            #commenters li {
+                list-style-type: none;
+            }
+        
+        .poster {
+            font-size: 12px;
+            color: #AAAAAA;
+        }
+        
+        #postcomment ul {
+            padding-left: 0px;
+        }
+        
+            #postcomment ul li {
+                list-style-type:  none;
+                padding-bottom: 5px;
+            }
+                
+        #postcomment label {
+            width: 74px;
+            display: inline-block;
+        }
+        
+        .c {
+            font-size: 14px;
+            background: #0E0E0E;
+            -webkit-border-radius: 10px;
+            -moz-border-radius: 10px;
+            border-radius: 10px;
+            color: #FFFFFF;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Comments Tutorial by Max Burstein</h1>
+    <form id="postcomment" method="post" action="">
+        {{form.as_p}}
+        <p><input type="submit" value="Submit" /></p>
+        {% csrf_token %}
+    </form>
+    <ul id="commenters">
+    {% for c in comment_tree %}     
+        <li id="{{c.id}}" class="c" style="margin-left:{{c.depth|add:c.depth}}em;">
+            <p class="poster">Anonymous - {{c.date|naturaltime}}</p>
+            <p>{{c.content}}</p>
+            <p><a href="" class="reply">reply</a></p>
+        </li>
+    {% empty %}
+        <li>There are currently no comments. You can be first!</li>
+    {% endfor %}
+    </ul>
+</body>
+</html>
