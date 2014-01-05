@@ -1,6 +1,6 @@
 from core.models import Comment, CommentForm
 from itertools import ifilter
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 def home(request):
     form = CommentForm(request.POST or None)
@@ -27,6 +27,7 @@ def home(request):
                 
             #Final save for parents and children
             temp.save()
+            return redirect('core.views.home') 
     
     #Retrieve all comments and sort them by path
     comment_tree = Comment.objects.all().order_by('path')
